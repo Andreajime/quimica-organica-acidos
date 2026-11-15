@@ -1,0 +1,45 @@
+table Solventes
+	lineageTag: ab6792f0-4df2-47cc-b44a-1207a3b111d8
+
+	column ID
+		dataType: string
+		lineageTag: 3cf8287f-a491-40d3-9b88-8746aa2b5604
+		summarizeBy: none
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Posición
+		dataType: string
+		lineageTag: 8a5f2272-e1e5-490d-a69d-da8a685398ba
+		summarizeBy: none
+		sourceColumn: Posición
+
+		annotation SummarizationSetBy = Automatic
+
+	column Solvente
+		dataType: string
+		lineageTag: 7bb2f8c8-4609-4fd2-8197-460fc2b2be5e
+		summarizeBy: none
+		sourceColumn: Solvente
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Solventes = m
+		mode: import
+		source =
+				let
+				    Origen = let
+				    Origen = Pasos,
+				    Columnas = Table.SelectColumns(Origen, {"ID", "Solvente 1", "Solvente 2"}),
+				    Despivotar = Table.UnpivotOtherColumns(Columnas, {"ID"}, "Posición", "Solvente"),
+				    Limpio = Table.SelectRows(Despivotar, each [Solvente] <> null and [Solvente] <> "")
+				in
+				    Limpio
+				in
+				    Origen
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,136 @@
+table Sustancias
+	lineageTag: 9efdf6c1-ec89-4948-9b35-e65d352d1bfa
+
+	measure 'N ácidos' = COUNTROWS ( Sustancias )
+		formatString: 0
+		lineageTag: d6bda414-7f9c-44b5-a753-fb715c115a37
+
+	column Sustancia
+		dataType: string
+		lineageTag: 3a03d682-10d7-47f2-a095-a4392a7c9c61
+		summarizeBy: none
+		sourceColumn: Sustancia
+
+		annotation SummarizationSetBy = Automatic
+
+	column CAS
+		dataType: string
+		lineageTag: 5905b38b-ddab-4b1e-9f3d-c31ff3f82d62
+		summarizeBy: none
+		sourceColumn: CAS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PM (g/mol)'
+		dataType: double
+		lineageTag: ce079cf5-d763-4242-b7d4-50966fc8e577
+		summarizeBy: none
+		sourceColumn: PM (g/mol)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Pf (°C)'
+		dataType: double
+		lineageTag: cd153256-f4e8-472d-b29b-97729a7e865b
+		summarizeBy: none
+		sourceColumn: Pf (°C)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Peb (°C)'
+		dataType: double
+		lineageTag: 2ca19f79-ba77-4691-a4f3-98ff991bd0e0
+		summarizeBy: none
+		sourceColumn: Peb (°C)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'ρ (g/cm³)'
+		dataType: double
+		lineageTag: a709e978-a66a-4857-ba9e-ac1944f2a8cd
+		summarizeBy: none
+		sourceColumn: ρ (g/cm³)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column pKa
+		dataType: double
+		lineageTag: af6d58da-a0d5-4db3-81fa-a8df5eca4f3b
+		summarizeBy: none
+		sourceColumn: pKa
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'μ (D)'
+		dataType: double
+		lineageTag: f0c2d6b3-032d-4008-ae32-4bf02ee2af58
+		summarizeBy: none
+		sourceColumn: μ (D)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Solubilidad (mol/L)'
+		dataType: double
+		lineageTag: 7885cf1d-fad5-4b23-901a-068ee15d77e8
+		summarizeBy: none
+		sourceColumn: Solubilidad (mol/L)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Pv (Pa)'
+		dataType: double
+		lineageTag: d9ca8ff7-a522-4f95-96b8-76bf319114d0
+		summarizeBy: none
+		sourceColumn: Pv (Pa)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Nombre corto'
+		dataType: string
+		lineageTag: d9094a1a-56ca-4695-971b-98e958ca140c
+		summarizeBy: none
+		sourceColumn: Nombre corto
+		sortByColumn: 'PM (g/mol)'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Sustancias = m
+		mode: import
+		source =
+				let
+				    Origen = let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\Lorena\Downloads\Plantilla_Documento_LaTex (1)\PowerBI_Acidos\tabla_acidos.xlsx"), null, true),
+				    Tabla = Origen{[Item = "T_Sustancias", Kind = "Table"]}[Data],
+				    SinNA = Table.ReplaceValue(Tabla, "NA", null, Replacer.ReplaceValue, Table.ColumnNames(Tabla)),
+				    Tipos = Table.TransformColumnTypes(SinNA, {
+				        {"Sustancia", type text}, {"CAS", type text},
+				        {"PM (g/mol)", type number}, {"Pf (°C)", type number}, {"Peb (°C)", type number},
+				        {"ρ (g/cm³)", type number}, {"pKa", type number}, {"μ (D)", type number},
+				        {"Solubilidad (mol/L)", type number}, {"Pv (Pa)", type number}}),
+				    Nombre = Table.AddColumn(Tipos, "Nombre corto",
+				        each Text.Proper(Text.Replace([Sustancia], "Ácido ", "")), type text)
+				in
+				    Nombre
+				in
+				    Origen
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

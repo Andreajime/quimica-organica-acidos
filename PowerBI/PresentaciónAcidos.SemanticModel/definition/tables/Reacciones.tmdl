@@ -1,0 +1,301 @@
+table Reacciones
+	lineageTag: 39807e6a-d149-410b-9c83-c604c8523062
+
+	measure 'N reacciones' = COUNTROWS ( Reacciones )
+		formatString: 0
+		lineageTag: 4bb1cfe3-a06c-447c-87b7-ebb69d3b2e9c
+
+	measure 'N con temperatura' = CALCULATE ( [N reacciones], NOT ISBLANK ( Reacciones[T máx (°C)] ) )
+		formatString: 0
+		lineageTag: a1361a7d-1245-4129-99cc-4f8425c92c05
+
+	measure 'N con calor' = CALCULATE ( [N reacciones], Reacciones[T máx (°C)] > 25 )
+		formatString: 0
+		lineageTag: 6d9d162a-a313-4bc3-8228-bcf0d78cdb6d
+
+	measure 'P calentamiento' = DIVIDE ( [N con calor], [N con temperatura] )
+		formatString: 0.00
+		lineageTag: 6cd39c55-6793-4c96-8279-00015144737b
+
+	measure 'Mediana T (°C)' = MEDIAN ( Reacciones[T máx (°C)] )
+		formatString: 0.0
+		lineageTag: 95d1ac8a-b213-4d36-a8ef-892933a28460
+
+	measure 'P catalizador' = DIVIDE ( CALCULATE ( [N reacciones], Reacciones[Usa catalizador] = "Sí" ), [N reacciones] )
+		formatString: 0.00
+		lineageTag: bf205657-343d-48dd-9ea9-4c00413b0eac
+
+	measure 'P tipo de reacción' = DIVIDE ( [N reacciones], CALCULATE ( [N reacciones], REMOVEFILTERS ( Reacciones[Tipo de reacción] ) ) )
+		formatString: 0.00
+		lineageTag: 18ef43a4-2d58-4cd8-a7d6-5722c9a61b44
+
+	measure 'P medio' = DIVIDE ( [N reacciones], CALCULATE ( [N reacciones], REMOVEFILTERS ( Reacciones[Medio] ), NOT ISBLANK ( Reacciones[Medio] ) ) )
+		formatString: 0.00
+		lineageTag: ceccf53d-4f0a-4a21-bb3a-11f43a01f864
+
+	measure 'N con medio' = CALCULATE ( [N reacciones], REMOVEFILTERS ( Reacciones[Medio] ), NOT ISBLANK ( Reacciones[Medio] ) )
+		formatString: 0
+		lineageTag: 394451b9-f3df-40ac-8595-d1b60dd69156
+
+	measure 'P medio IC inferior' = VAR n = [N con medio] VAR p = [P medio] VAR z = 1.96 VAR centro = ( p + z ^ 2 / ( 2 * n ) ) / ( 1 + z ^ 2 / n ) VAR ancho = z * SQRT ( p * ( 1 - p ) / n + z ^ 2 / ( 4 * n ^ 2 ) ) / ( 1 + z ^ 2 / n ) RETURN IF ( n > 0, centro - ancho )
+		formatString: 0.00
+		lineageTag: 60fb6b5b-8ca2-4da6-9521-dc4da4eb40c5
+
+	measure 'P medio IC superior' = VAR n = [N con medio] VAR p = [P medio] VAR z = 1.96 VAR centro = ( p + z ^ 2 / ( 2 * n ) ) / ( 1 + z ^ 2 / n ) VAR ancho = z * SQRT ( p * ( 1 - p ) / n + z ^ 2 / ( 4 * n ^ 2 ) ) / ( 1 + z ^ 2 / n ) RETURN IF ( n > 0, centro + ancho )
+		formatString: 0.00
+		lineageTag: e5b3fa9b-dec4-4258-951c-556f81506177
+
+	measure 'P calentamiento IC inferior' = VAR n = [N con temperatura] VAR p = [P calentamiento] VAR z = 1.96 VAR centro = ( p + z ^ 2 / ( 2 * n ) ) / ( 1 + z ^ 2 / n ) VAR ancho = z * SQRT ( p * ( 1 - p ) / n + z ^ 2 / ( 4 * n ^ 2 ) ) / ( 1 + z ^ 2 / n ) RETURN IF ( n > 0, centro - ancho )
+		formatString: 0.00
+		lineageTag: 1cacb44a-b624-415f-b574-8ce901390c9d
+
+	measure 'P calentamiento IC superior' = VAR n = [N con temperatura] VAR p = [P calentamiento] VAR z = 1.96 VAR centro = ( p + z ^ 2 / ( 2 * n ) ) / ( 1 + z ^ 2 / n ) VAR ancho = z * SQRT ( p * ( 1 - p ) / n + z ^ 2 / ( 4 * n ^ 2 ) ) / ( 1 + z ^ 2 / n ) RETURN IF ( n > 0, centro + ancho )
+		formatString: 0.00
+		lineageTag: 630ce870-6fbc-461c-862f-74b06bebe10d
+
+	measure 'r Pearson PM-Peb' = VAR t = FILTER ( Reacciones, NOT ISBLANK ( Reacciones[PM (g/mol)] ) && NOT ISBLANK ( Reacciones[Peb (°C)] ) ) VAR mx = AVERAGEX ( t, Reacciones[PM (g/mol)] ) VAR my = AVERAGEX ( t, Reacciones[Peb (°C)] ) VAR sxy = SUMX ( t, ( Reacciones[PM (g/mol)] - mx ) * ( Reacciones[Peb (°C)] - my ) ) VAR sxx = SUMX ( t, ( Reacciones[PM (g/mol)] - mx ) ^ 2 ) VAR syy = SUMX ( t, ( Reacciones[Peb (°C)] - my ) ^ 2 ) RETURN DIVIDE ( sxy, SQRT ( sxx * syy ) )
+		formatString: 0.00
+		lineageTag: 8cc23309-298f-4c4c-a735-1f261b833b29
+
+	measure 'R2 PM-Peb' = [r Pearson PM-Peb] ^ 2
+		formatString: 0.00
+		lineageTag: 54473f75-96a7-4b73-a9d3-c2d17c5d574f
+
+	measure 'N solventes' = COUNTROWS ( Solventes )
+		formatString: 0
+		lineageTag: 4368113a-10b9-4a31-afe0-9a1b5c6d68bd
+
+	measure 'P histograma T' = DIVIDE ( [N reacciones], CALCULATE ( [N con temperatura], REMOVEFILTERS ( Reacciones[Intervalo T (°C)] ) ) )
+		formatString: 0.00
+		lineageTag: d7743e03-34a3-46cb-83e9-85a097b0cae0
+
+	measure 'N reacciones (conjunto)' = CALCULATE ( [N reacciones], Reacciones[Conjunto] = "Reacciones" )
+		formatString: 0
+		lineageTag: 96d9acd1-5fc1-4bff-8c6d-5efbdc0c506f
+
+	measure 'N obtenciones' = CALCULATE ( [N reacciones], Reacciones[Conjunto] = "Obtenciones" )
+		formatString: 0
+		lineageTag: 5c5be692-2e1e-40fe-8b42-5a76f132b2a3
+
+	column ID
+		dataType: string
+		lineageTag: fc87698d-d75c-4b15-9333-f3ee9b6eaf7f
+		summarizeBy: none
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sustancia
+		dataType: string
+		lineageTag: 9fa963cc-764c-4ab6-b75f-f812f4173192
+		summarizeBy: none
+		sourceColumn: Sustancia
+
+		annotation SummarizationSetBy = Automatic
+
+	column Conjunto
+		dataType: string
+		lineageTag: 8d3a3c95-b170-4c6a-b7d5-6e3955d01e58
+		summarizeBy: none
+		sourceColumn: Conjunto
+
+		annotation SummarizationSetBy = Automatic
+
+	column Compuesto
+		dataType: string
+		lineageTag: 7b7d7c86-1b7d-4d4b-b375-92c081976b2e
+		summarizeBy: none
+		sourceColumn: Compuesto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CAS compuesto'
+		dataType: string
+		lineageTag: 9901faf6-97f6-4e9b-a1f6-3a327e333285
+		summarizeBy: none
+		sourceColumn: CAS compuesto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PM (g/mol)'
+		dataType: double
+		lineageTag: f4c476b7-ff60-49ef-83a6-6b2dd1d862d2
+		summarizeBy: sum
+		sourceColumn: PM (g/mol)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Pf (°C)'
+		dataType: double
+		lineageTag: e3993edd-92dc-4f1d-a5b0-eb20032c155d
+		summarizeBy: sum
+		sourceColumn: Pf (°C)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Peb (°C)'
+		dataType: double
+		lineageTag: ba5f2659-7584-418c-a180-5780f2fdac1d
+		summarizeBy: sum
+		sourceColumn: Peb (°C)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'ρ (g/cm³)'
+		dataType: double
+		lineageTag: f2af8ce7-fc88-4ccc-833e-20d42dec1f94
+		summarizeBy: sum
+		sourceColumn: ρ (g/cm³)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column pKa
+		dataType: double
+		lineageTag: adc8b87b-7d04-4a12-bb68-e8df493d6cbc
+		summarizeBy: sum
+		sourceColumn: pKa
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'μ (D)'
+		dataType: double
+		lineageTag: 08a6374a-d76e-4caa-bd09-47ca04914429
+		summarizeBy: sum
+		sourceColumn: μ (D)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Solubilidad (mol/L)'
+		dataType: double
+		lineageTag: 16ec2344-308f-434f-aba2-2be53019f031
+		summarizeBy: sum
+		sourceColumn: Solubilidad (mol/L)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Pv (Pa)'
+		dataType: double
+		lineageTag: d8414a71-cd5b-487b-96eb-239dbb03d795
+		summarizeBy: sum
+		sourceColumn: Pv (Pa)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Medio
+		dataType: string
+		lineageTag: 53177a42-9a0e-4243-ab4b-9b0fcea562a3
+		summarizeBy: none
+		sourceColumn: Medio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de reacción'
+		dataType: string
+		lineageTag: f11584b3-ac94-4355-a45f-cead3b4bd201
+		summarizeBy: none
+		sourceColumn: Tipo de reacción
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nombre de la reacción'
+		dataType: string
+		lineageTag: a8c90fd4-eb1d-4ae3-bd2d-493228f1a0e9
+		summarizeBy: none
+		sourceColumn: Nombre de la reacción
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'T máx (°C)'
+		dataType: double
+		lineageTag: e105414d-8201-421c-a131-3abae7a33808
+		summarizeBy: sum
+		sourceColumn: T máx (°C)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Número de pasos'
+		dataType: int64
+		formatString: 0
+		lineageTag: 1d3a620c-9df8-4532-87a3-dc025c831c62
+		summarizeBy: sum
+		sourceColumn: Número de pasos
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Usa catalizador'
+		dataType: string
+		lineageTag: c824cccb-b3d2-412e-ac76-2fb01f57e7ac
+		summarizeBy: none
+		sourceColumn: Usa catalizador
+
+		annotation SummarizationSetBy = Automatic
+
+	column Calentamiento
+		dataType: string
+		lineageTag: fbc87582-b1c1-42c2-b7a1-e113fde45392
+		summarizeBy: none
+		sourceColumn: Calentamiento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'ΔPM (g/mol)' = IF ( Reacciones[Conjunto] = "Reacciones", Reacciones[PM (g/mol)] - RELATED ( Sustancias[PM (g/mol)] ) )
+		dataType: double
+		lineageTag: 531da1f1-a5b0-400a-8fc9-c6e0ca49a4c3
+		summarizeBy: none
+
+	column 'Orden PM sustancia' = RELATED ( Sustancias[PM (g/mol)] )
+		dataType: double
+		lineageTag: 10973e21-0e71-4a87-b1f7-f107e76dad72
+		summarizeBy: none
+
+	column 'Intervalo T (°C)' = IF ( NOT ISBLANK ( Reacciones[T máx (°C)] ), FLOOR ( Reacciones[T máx (°C)], 25 ) )
+		dataType: double
+		formatString: 0
+		lineageTag: 3d20458e-de41-4cfe-b31a-5b1493541222
+		summarizeBy: none
+
+	partition Reacciones = m
+		mode: import
+		source =
+				let
+				    Origen = let
+				    Origen = Pasos,
+				    Paso1 = Table.SelectRows(Origen, each [Paso] = 1),
+				    Quitar = Table.SelectColumns(Paso1, {"ID", "Sustancia", "Conjunto", "Compuesto", "CAS compuesto",
+				        "PM (g/mol)", "Pf (°C)", "Peb (°C)", "ρ (g/cm³)", "pKa", "μ (D)", "Solubilidad (mol/L)", "Pv (Pa)",
+				        "Medio", "Tipo de reacción", "Nombre de la reacción"}),
+				    PorReaccion = Table.Group(Origen, {"ID"}, {
+				        {"T máx (°C)", each List.Max([#"T (°C)"]), type nullable number},
+				        {"Número de pasos", each Table.RowCount(_), Int64.Type},
+				        {"Usa catalizador", each if List.NonNullCount([Catalizador 1]) > 0 then "Sí" else "No", type text}}),
+				    Unir = Table.NestedJoin(Quitar, {"ID"}, PorReaccion, {"ID"}, "Datos", JoinKind.LeftOuter),
+				    Expandir = Table.ExpandTableColumn(Unir, "Datos", {"T máx (°C)", "Número de pasos", "Usa catalizador"}),
+				    Calor = Table.AddColumn(Expandir, "Calentamiento",
+				        each if [#"T máx (°C)"] = null then null else if [#"T máx (°C)"] > 25 then "Sí" else "No", type text)
+				in
+				    Calor
+				in
+				    Origen
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

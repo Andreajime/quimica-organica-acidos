@@ -1,0 +1,107 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "5d1b827200d0e18bd3e7",
+  "position": {
+    "x": 349.11072016344139,
+    "y": 219.665172237671,
+    "z": 1,
+    "height": 766.86680665115489,
+    "width": 1217.9649282106577,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Algunos ácidos contaban con mucha información, lo que permitió seleccionar los registros más completos; para otros, el número de reacciones y obtenciones disponibles era muy reducido, en muchos casos casi igual al requerido, por lo que no fue posible filtrar los datos y los resultados pueden estar sesgados.",
+                    "textStyle": {
+                      "fontFamily": "Times New Roman",
+                      "fontSize": "28pt"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "center",
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ],
+                "horizontalTextAlignment": "center",
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "En los diez ácidos carboxílicos estudiados, el tamaño molecular controla las propiedades de volatilidad: en los productos, el punto de ebullición aumenta 1.19 °C por cada g/mol y la presión de vapor disminuye con el punto de ebullición, mientras que la densidad depende de los heteroátomos y no del peso molecular.",
+                    "textStyle": {
+                      "fontFamily": "Times New Roman",
+                      "fontSize": "28pt"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "center",
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "La reactividad de los ácidos se concentra en la sustitución nucleofílica (58 % de las reacciones), sobre todo en el carbono del acilo, y su obtención se basa en procesos redox (51%) e hidrólisis.",
+                    "textStyle": {
+                      "fontFamily": "Times New Roman",
+                      "fontSize": "28pt"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "center",
+                "listType": "bullet"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Los medios ácido y básico son los más frecuentes, y obtener los ácidos requiere calentamiento con mayor probabilidad que transformarlos.",
+                    "textStyle": {
+                      "fontFamily": "Times New Roman",
+                      "fontSize": "28pt"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "center",
+                "listType": "bullet"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
