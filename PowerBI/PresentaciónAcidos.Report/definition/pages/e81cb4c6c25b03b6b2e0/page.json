@@ -1,8 +1,0 @@
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "e81cb4c6c25b03b6b2e0",
-  "displayName": "3. Condiciones",
-  "displayOption": "FitToPage",
-  "height": 720,
-  "width": 1280
-}

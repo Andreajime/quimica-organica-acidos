@@ -1,8 +1,0 @@
-relationship AutoDetected_a5faa8f4-4000-49aa-9fe0-17c726f7dfe4
-	fromColumn: Reacciones.Sustancia
-	toColumn: Sustancias.Sustancia
-
-relationship rel_solventes_reacciones
-	fromColumn: Solventes.ID
-	toColumn: Reacciones.ID
-
